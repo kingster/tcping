@@ -4,11 +4,11 @@ make install
 ```
 
 # Usage:
-tcping hostname
-(uses port 80) or
-tcping -p port hostname
+tcping hostname  
+(uses port 80) or  
+tcping -p port hostname  
 
-ping once:
+ping once:  
 tcping -p port -c 1 hostname
 
 tcping returns:  
