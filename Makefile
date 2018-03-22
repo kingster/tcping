@@ -1,4 +1,5 @@
-CC=gcc
+CC=g++
+# CC=mips-linux-gnu-g++
 
 LDFLAGS=
 CFLAGS=-g -Wall -Wextra -pedantic
@@ -6,6 +7,9 @@ CFLAGS=-g -Wall -Wextra -pedantic
 VERSION=0.1
 
 OBJS=main.o tcp.o
+
+.cpp.o: $<
+	@$(CC) $(CFLAGS) -o $@ -c $<
 
 all: tcping
 

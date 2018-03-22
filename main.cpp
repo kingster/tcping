@@ -18,12 +18,14 @@ void usage(void)
     fprintf(stderr, "hostname	hostname (e.g. localhost)\n");
     fprintf(stderr, "-p portnr	portnumber (e.g. 80)\n");
     fprintf(stderr, "-c count	how many times to connect\n");
+    fprintf(stderr, "-t timeout	timeout for the connection\n");
     fprintf(stderr, "-i interval	delay between each connect\n");
+    fprintf(stderr, "-I interface	interface to connect via\n");
     fprintf(stderr, "-f		flood connect (no delays)\n");
     fprintf(stderr, "-q		quiet, only returncode\n\n");
 }
 
-void handler(int sig)
+void handler(int /*sig*/)
 {
     stop = 1;
 }
@@ -31,17 +33,18 @@ void handler(int sig)
 int main(int argc, char *argv[])
 {
     char *hostname = NULL;
-    char *portnr = "7";
+    char *portnr = (char *)"7";
+    char * interface;
     int c;
     int count = -1, curncount = 0;
-    int wait = 1, quiet = 0;
+    int wait = 1, quiet = 0, timeout = 60;
     int ok = 0, err = 0;
     double min = 999999999999999.0, avg = 0.0, max = 0.0;
     struct addrinfo *resolved;
     int errcode;
     int seen_addrnotavail;
 
-    while((c = getopt(argc, argv, "h:p:c:i:fq?")) != -1)
+    while((c = getopt(argc, argv, "h:p:c:i:t:I:fq?")) != -1)
     {
         switch(c)
         {
@@ -55,6 +58,13 @@ int main(int argc, char *argv[])
 
             case 'i':
                 wait = atoi(optarg);
+                break;
+
+            case 't' :
+                timeout = atoi(optarg);
+                break;
+            case 'I' :
+                interface = optarg;
                 break;
 
             case 'f':
@@ -78,6 +88,7 @@ int main(int argc, char *argv[])
         usage();
         return 3;
     }
+
     hostname = argv[optind];
 
     signal(SIGINT, handler);
@@ -97,7 +108,7 @@ int main(int argc, char *argv[])
         double ms;
         struct timeval rtt;
 
-        if ((errcode = connect_to(resolved, &rtt)) != 0)
+        if ((errcode = connect_to(resolved, interface,  timeout, &rtt)) != 0)
         {
             if (errcode != -EADDRNOTAVAIL)
             {
