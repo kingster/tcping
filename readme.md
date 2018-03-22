@@ -1,9 +1,9 @@
-Installation:
+#Installation:
 ------------
 make install
 
 
-Usage:
+#Usage:
 -----
 tcping hostname
 (uses port 80) or
@@ -19,5 +19,4 @@ tcping returns:
 
 examples:
 tcping -p 8080 127.0.0.1
-
-Please support my opensource development: http://www.vanheusden.com/wishlist.php
+tcping -p 80 -t 5 -I eth0 www.google.com
