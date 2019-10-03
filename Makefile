@@ -1,13 +1,13 @@
 CC=g++
-# CC=mips-linux-gnu-g++
+#CC=/usr/bin/mipsel-linux-gnu-g++
 
-LDFLAGS=
-CFLAGS=-g -Wall -Wextra -pedantic
+# LDFLAGS=-static
+CFLAGS=-g  -Wall -Wextra -pedantic
 
 VERSION=0.1
 
 OBJS=main.o tcp.o
-
+	
 .cpp.o: $<
 	@$(CC) $(CFLAGS) -o $@ -c $<
 

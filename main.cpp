@@ -33,7 +33,7 @@ void handler(int /*sig*/)
 int main(int argc, char *argv[])
 {
     char *hostname = NULL;
-    char *portnr = (char *)"7";
+    char *portnr = (char *)"80";
     char * interface;
     int c;
     int count = -1, curncount = 0;

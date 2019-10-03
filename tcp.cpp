@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include <net/if.h>
 #include "tcp.h"
 
 int lookup(char *host, char *portnr, struct addrinfo **res)
@@ -42,7 +42,17 @@ int connect_to(struct addrinfo *addr, char * interface, int timeout, struct time
             continue;
         if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0)
             continue;
+        if (interface != NULL){
+
+#ifdef __APPLE__
+        int idx = if_nametoindex(interface);
+        setsockopt(fd, IPPROTO_TCP, IP_BOUND_IF, &idx, sizeof(idx) );
+#else 
         setsockopt( fd, SOL_SOCKET, SO_BINDTODEVICE, interface, sizeof(interface));
+#endif
+
+        }
+
         fcntl(fd, F_SETFL, O_NONBLOCK);
 
         if (gettimeofday(&start, NULL) == -1)

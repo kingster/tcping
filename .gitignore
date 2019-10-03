@@ -159,3 +159,7 @@ fabric.properties
 *.lai
 
 # Executables
+.exe
+build-*
+
+.vagrant
