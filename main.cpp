@@ -110,10 +110,10 @@ int main(int argc, char *argv[])
 
         if ((errcode = connect_to(resolved, interface,  timeout, &rtt)) != 0)
         {
+            err++;
             if (errcode != -EADDRNOTAVAIL)
             {
                 printf("error connecting to host (%d): %s\n", -errcode, strerror(-errcode));
-                err++;
             }
             else
             {
