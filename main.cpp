@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
     if (!quiet)
     {
         printf("--- %s:%s tcping statistics ---\n", hostname, portnr);
-        printf("%d responses, %d ok, %3.2f%% failed\n", curncount, ok, (((double)err) / abs(((double)count)) * 100.0));
+        printf("%d responses, %d ok, %3.2f%% failed\n", curncount, ok, (((double)err) / abs(((double)curncount)) * 100.0));
         printf("round-trip min/avg/max = %.1f/%.1f/%.1f ms\n", min, avg / (double)ok, max);
     }
 
