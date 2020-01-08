@@ -14,19 +14,24 @@ static volatile int stop = 0;
 
 void usage(void)
 {
-    fprintf(stderr, "tcping, (C) 2003 folkert@vanheusden.com\n\n");
-    fprintf(stderr, "hostname	hostname (e.g. localhost)\n");
-    fprintf(stderr, "-p portnr	portnumber (e.g. 80)\n");
-    fprintf(stderr, "-c count	how many times to connect\n");
+    fprintf(stderr, "tcping version 0.2\n");
+
+    fprintf(stderr, "Usage: tcping [-fqhv] [-p port] [-c count] [-i interval] [-I interface] destination\n");
+
+    fprintf(stderr, "-p port Port number (default port 80)\n");
+    fprintf(stderr, "-c count   How many times to connect\n");
     fprintf(stderr, "-t timeout	timeout for the connection\n");
     fprintf(stderr, "-i interval	delay between each connect\n");
     fprintf(stderr, "-I interface	interface to connect via\n");
     fprintf(stderr, "-f		flood connect (no delays)\n");
-    fprintf(stderr, "-q		quiet, only returncode\n\n");
+    fprintf(stderr, "-q		quiet, only returncode\n");
+    fprintf(stderr, "-h     This help text\n\n");
+
 }
 
-void handler(int /*sig*/)
+void handler(int sig)
 {
+    fprintf(stderr, "\nreceive signal:[%d]\n", sig);
     stop = 1;
 }
 
@@ -44,7 +49,7 @@ int main(int argc, char *argv[])
     int errcode;
     int seen_addrnotavail;
 
-    while((c = getopt(argc, argv, "h:p:c:i:t:I:fq?")) != -1)
+    while((c = getopt(argc, argv, "hp:c:i:t:I:fq?")) != -1)
     {
         switch(c)
         {
@@ -84,7 +89,7 @@ int main(int argc, char *argv[])
 
     if (optind >= argc)
     {
-        fprintf(stderr, "No hostname given\n");
+        fprintf(stderr, "ERROR: No hostname given\n");
         usage();
         return 3;
     }
@@ -101,7 +106,7 @@ int main(int argc, char *argv[])
     }
 
     if (!quiet)
-        printf("PING %s:%s\n", hostname, portnr);
+        printf("TCPING %s:%s\n", hostname, portnr);
 
     while((curncount < count || count == -1) && stop == 0)
     {
@@ -113,7 +118,12 @@ int main(int argc, char *argv[])
             err++;
             if (errcode != -EADDRNOTAVAIL)
             {
-                printf("error connecting to host (%d): %s\n", -errcode, strerror(-errcode));
+                printf("error connecting to host (%d): %s", -errcode, strerror(-errcode));
+                if(-errcode == EINPROGRESS){
+                    printf(" [Timeout]\n");
+                }else{
+                    printf("\n");
+                }
             }
             else
             {
@@ -151,7 +161,7 @@ int main(int argc, char *argv[])
 
     if (!quiet)
     {
-        printf("--- %s:%s ping statistics ---\n", hostname, portnr);
+        printf("--- %s:%s tcping statistics ---\n", hostname, portnr);
         printf("%d responses, %d ok, %3.2f%% failed\n", curncount, ok, (((double)err) / abs(((double)count)) * 100.0));
         printf("round-trip min/avg/max = %.1f/%.1f/%.1f ms\n", min, avg / (double)ok, max);
     }
