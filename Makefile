@@ -1,4 +1,4 @@
-CC=g++
+CC=g++ -ggdb
 #CC=/usr/bin/mipsel-linux-gnu-g++
 
 # LDFLAGS=-static
